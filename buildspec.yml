@@ -2,16 +2,17 @@ version: 0.2
 phases:
   pre_build:
     commands:
+      - aws --version
       - echo Logging in to Amazon ECR...
-      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - docker login -u AWS -p $(aws ecr get-login-password --region ap-south-1) <account-id-here>.dkr.ecr.ap-south-1.amazonaws.com
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t  web:1 .
-      - docker tag web:1 <ECR-URI-HERE>
+      - docker tag web:1 <account-id-here>.dkr.ecr.ap-south-1.amazonaws.com/cicd
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push <ECR-URI-HERE>
+      - docker push <account-id-here>.dkr.ecr.ap-south-1.amazonaws.com/cicd
